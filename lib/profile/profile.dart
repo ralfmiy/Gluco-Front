@@ -1,3 +1,5 @@
+import 'package:demo_youtube/BottomNav.dart';
+import 'package:demo_youtube/login.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
@@ -11,9 +13,9 @@ class Profile extends StatelessWidget {
           Cabecera(context),
           Nombre(),
           Separador(context),
-          eMail(ini: "eMail: ", dat: "ralfmiy@hotmail.com"),
-          eMail(ini: "Teléfono: ", dat: "387-5353233"),
-          eMail(ini: "Fecha Nacimiento: ", dat: "14/11/1996"),
+          Datos(ini: "eMail: ", dat: "ralfmiy@hotmail.com"),
+          Datos(ini: "Teléfono: ", dat: "387-5353233"),
+          //eMail(ini: "Fecha Nacimiento: ", dat: "14/11/1996"),
           Expanded(
             child: Container(),
           ),
@@ -93,7 +95,7 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Widget eMail({String ini = "", String dat = ""}) {
+  Widget Datos({String ini = "", String dat = ""}) {
     return Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(left: 30, top: 25),
@@ -122,7 +124,13 @@ class Profile extends StatelessWidget {
 
   Widget BotonCerrarSesion(context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
+          builder: (BuildContext context) {
+            return Login();
+          },
+        ), (Route<dynamic> route) => false);
+      },
       minWidth: MediaQuery.of(context).size.width * 0.65,
       height: 55,
       shape: RoundedRectangleBorder(

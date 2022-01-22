@@ -1,13 +1,14 @@
+import 'package:demo_youtube/BottomNav.dart';
+import 'package:demo_youtube/create_user.dart';
 import 'package:flutter/material.dart';
 
-class Inicio extends StatefulWidget {
-  const Inicio({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
 
   @override
-  _InicioState createState() => _InicioState();
+  _LoginState createState() => _LoginState();
 }
 
-class _InicioState extends State<Inicio> {
+class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +39,7 @@ Widget Cuerpo(BuildContext context) {
           SizedBox(height: 10),
           CampoContrasena(),
           SizedBox(height: 25),
-          BotonEntrar(),
+          BotonEntrar(context),
           SizedBox(height: 10),
           BotonCrearCuenta(context),
         ],
@@ -95,7 +96,7 @@ Widget CampoUsuario() {
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
     child: TextField(
       decoration: InputDecoration(
-        hintText: "User",
+        hintText: "Mail",
         fillColor: Colors.white,
         filled: true,
       ),
@@ -109,7 +110,7 @@ Widget CampoContrasena() {
     child: TextField(
       obscureText: true,
       decoration: InputDecoration(
-        hintText: "Password",
+        hintText: "Contraseña",
         fillColor: Colors.white,
         filled: true,
       ),
@@ -117,9 +118,15 @@ Widget CampoContrasena() {
   );
 }
 
-Widget BotonEntrar() {
+Widget BotonEntrar(BuildContext context) {
   return FlatButton(
-    onPressed: () {},
+    onPressed: () {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
+          builder: (BuildContext context) {
+            return NavBar();
+          },
+        ), (Route<dynamic> route) => false);
+    },
     minWidth: 150,
     height: 50,
     shape: RoundedRectangleBorder(
@@ -152,7 +159,12 @@ Widget BotonCrearCuenta(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateUser()),
+                  );
+                },
                 height: 40,
                 child: Text(
                   "Crear cuenta",

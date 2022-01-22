@@ -4,7 +4,6 @@ import 'search/search.dart';
 import 'Profile/profile.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
 
   @override
   State<NavBar> createState() => _NavBarState();
