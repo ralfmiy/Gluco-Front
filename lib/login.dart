@@ -1,9 +1,9 @@
 import 'package:demo_youtube/BottomNav.dart';
 import 'package:demo_youtube/create_user.dart';
+import 'package:demo_youtube/recuperacion_password.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
-
   @override
   _LoginState createState() => _LoginState();
 }
@@ -122,10 +122,10 @@ Widget BotonEntrar(BuildContext context) {
   return FlatButton(
     onPressed: () {
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
-          builder: (BuildContext context) {
-            return NavBar();
-          },
-        ), (Route<dynamic> route) => false);
+        builder: (BuildContext context) {
+          return NavBar();
+        },
+      ), (Route<dynamic> route) => false);
     },
     minWidth: 150,
     height: 50,
@@ -176,7 +176,13 @@ Widget BotonCrearCuenta(BuildContext context) {
                 ),
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RecuperacionPassword()),
+                  );
+                },
                 height: 40,
                 child: Text(
                   "¿Olvidaste tu contraseña?",
