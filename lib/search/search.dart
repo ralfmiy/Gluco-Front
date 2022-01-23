@@ -47,7 +47,7 @@ class _SearchState extends State<Search> {
   int? sortColumnIndex;
   bool isAscending = false;
 
-  Widget TablaDatos2(List<Medicion> datosGrafico2) {
+  Widget TablaDatos2(List<Medicion>   datosGrafico2) {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
