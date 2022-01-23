@@ -1,5 +1,6 @@
 import 'package:demo_youtube/BottomNav.dart';
 import 'package:demo_youtube/create_user.dart';
+import 'package:demo_youtube/information.dart';
 import 'package:demo_youtube/recuperacion_password.dart';
 import 'package:flutter/material.dart';
 
@@ -200,7 +201,13 @@ Widget BotonCrearCuenta(BuildContext context) {
           bottom: 40,
           right: 0,
           child: FlatButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Information()),
+                  );
+            },
             height: 40,
             label: Text(
               "",
