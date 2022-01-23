@@ -22,46 +22,45 @@ Widget Cuerpo(BuildContext context) {
     decoration: BoxDecoration(
       image: DecorationImage(
         image: AssetImage('assets/img/grisnew.png'),
-        // image: NetworkImage(
-        //     "https://png.pngtree.com/thumb_back/fw800/background/20190223/ourmid/pngtree-beautiful-forest-night-purple-background-material-nightnight-viewnightat-nightnightmoonsimplewooddead-image_79316.jpg"),
         fit: BoxFit.cover,
       ),
     ),
-    child: Center(
-      child: Column(
-        //mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 25),
-          Cabecera(context),
-          Nombre(),
-          SizedBox(height: 25),
-          CampoUsuario(),
-          SizedBox(height: 10),
-          CampoContrasena("Contraseña"),
-          SizedBox(height: 10),
-          CampoContrasena("Repetir contraseña"),
-          SizedBox(height: 10),
-          CampoTelefono(),
-          SizedBox(height: 25),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: BotonCancelar(context),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: BotonCrearCuenta(context),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+    child: ListView(
+      padding: EdgeInsets.only(top: 20, bottom: 50),
+      children: [
+        Cabecera(context),
+        Nombre(),
+        SizedBox(height: 25),
+        CampoUsuario("Nombre"),
+        SizedBox(height: 10),
+        CampoUsuario("Apellido"),
+        SizedBox(height: 10),
+        CampoMail(),
+        SizedBox(height: 10),
+        CampoContrasena("Contraseña"),
+        SizedBox(height: 10),
+        CampoContrasena("Repetir contraseña"),
+        SizedBox(height: 10),
+        CampoTelefono(),
+        SizedBox(height: 25),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: BotonCancelar(context),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: BotonCrearCuenta(context),
+              ),
+            ],
+          ),
+        ),
+      ],
     ),
   );
 }
@@ -109,12 +108,28 @@ Widget Nombre() {
   );
 }
 
-Widget CampoUsuario() {
+Widget CampoMail() {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
     child: TextField(
       decoration: InputDecoration(
         hintText: "Mail",
+        fillColor: Colors.white,
+        filled: true,
+      ),
+    ),
+  );
+}
+
+Widget CampoUsuario(String text) {
+  return Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 5,
+    ),
+    child: TextField(
+      decoration: InputDecoration(
+        hintText: text,
         fillColor: Colors.white,
         filled: true,
       ),
