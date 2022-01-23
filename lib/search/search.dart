@@ -11,10 +11,97 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   late List<Medicion> _datosGrafico;
+  List<Medicion> datosGrafico = [
+    Medicion(1, 80),
+    Medicion(2, 85),
+    Medicion(3, 90),
+    Medicion(4, 75),
+    Medicion(6, 80),
+    Medicion(7, 80),
+    Medicion(8, 80),
+    Medicion(9, 80),
+  ];
+
+  List<Medicion> getMediciones() {
+    datosGrafico;
+    return datosGrafico;
+  }
+
+  late List<Medicion> _datosGrafico2;
+  List<Medicion> datosGrafico2 = [
+    Medicion(1, 80),
+    Medicion(2, 85),
+    Medicion(3, 90),
+    Medicion(4, 75),
+    Medicion(6, 80),
+    Medicion(7, 80),
+    Medicion(8, 80),
+    Medicion(9, 80),
+  ];
+
+  List<Medicion> getMediciones2() {
+    datosGrafico2;
+    return datosGrafico2;
+  }
+
+  int? sortColumnIndex;
+  bool isAscending = false;
+
+  Widget TablaDatos2(List<Medicion> datosGrafico2) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        DataTable(
+          sortAscending: isAscending,
+          sortColumnIndex: sortColumnIndex,
+          columns: [
+            DataColumn(
+              label: Text("Hora"),
+              onSort: _onSort,
+            ),
+            DataColumn(
+              label: Text("Medición"),
+              onSort: _onSort,
+            ),
+          ],
+          rows: getRows(datosGrafico2),
+        ),
+      ],
+    );
+  }
+
+  List<DataRow> getRows(List<Medicion> mediciones) =>
+      mediciones.map((Medicion medicion) {
+        final cells = [medicion.dia, medicion.medida];
+        return DataRow(cells: getCells(cells));
+      }).toList();
+
+  List<DataCell> getCells(List<dynamic> cells) =>
+      cells.map((data) => DataCell(Text('$data'))).toList();
+
+  int _compareString(bool ascending, double dia, double dia2) =>
+      ascending ? dia.compareTo(dia2) : dia2.compareTo(dia);
+
+  void _onSort(int columnIndex, bool ascending) {
+    if (columnIndex == 0) {
+      datosGrafico2.sort((medicion1, medicion2) =>
+          _compareString(ascending, medicion1.dia, medicion2.dia));
+    } else if (columnIndex == 1) {
+      datosGrafico2.sort((medicion1, medicion2) =>
+          _compareString(ascending, medicion1.medida, medicion2.medida));
+      //si necesito enviar numeros en lugar de string, puedo '${variable.atributo}'
+    }
+
+    setState(() {
+      this.sortColumnIndex = columnIndex;
+      this.isAscending = ascending;
+    });
+  }
 
   @override
   void initState() {
     _datosGrafico = getMediciones();
+    _datosGrafico2 = getMediciones2();
     super.initState();
   }
 
@@ -25,22 +112,9 @@ class _SearchState extends State<Search> {
       children: [
         Tabla(),
         BotonSeleFecha(),
+        Expanded(child: TablaDatos2(_datosGrafico2)),
       ],
     );
-  }
-
-  List<Medicion> getMediciones() {
-    List<Medicion> datosGrafico = [
-      Medicion(1, 80),
-      Medicion(2, 85),
-      Medicion(3, 90),
-      Medicion(4, 75),
-      Medicion(6, 80),
-      Medicion(7, 80),
-      Medicion(8, 80),
-      Medicion(9, 80),
-    ];
-    return datosGrafico;
   }
 
   Widget Tabla() {
@@ -111,168 +185,16 @@ class Medicion {
   final double medida;
 }
 
-// import 'dart:math';
-
-// import 'package:flutter/material.dart';
-// import 'package:charts_flutter/flutter.dart' as charts;
-
-// /// Data class to visualize.
-// class _SalesData {
-//   final int year;
-//   final int sales;
-
-//   _SalesData(this.year, this.sales);
-//   // Returns Jan.1st of that year as date.
-//   DateTime get date => DateTime(this.year);
+// Widget TablaDatos(List<Medicion> datosGrafico) {
+//   return ListView.builder(
+//     itemCount: datosGrafico.length,
+//     itemBuilder: (context, index) {
+//       return Text(datosGrafico[index].dia.toString() +
+//           "----" +
+//           datosGrafico[index].medida.toString());
+//     },
+//   );
 // }
 
-// /// Generate some random data.
-// List<_SalesData> _genRandData() {
-//   final random = Random();
-//   // Returns an increasing series with some fluctuations.
-//   return [
-//     for (int i = 2005; i < 2020; ++i)
-//       _SalesData(i, (i - 2000) * 40 + random.nextInt(100)),
-//   ];
-// }
 
-// class Search extends StatefulWidget {
-//   const Search({Key? key}) : super(key: key);
 
-//   @override
-//   _TimeseriesChartExampleState createState() => _TimeseriesChartExampleState();
-// }
-
-// class _TimeseriesChartExampleState extends State<Search> {
-//   bool _animate = true;
-//   bool _defaultInteractions = true;
-//   bool _includeArea = true;
-//   bool _includePoints = true;
-//   bool _stacked = true;
-//   charts.BehaviorPosition _titlePosition = charts.BehaviorPosition.bottom;
-//   charts.BehaviorPosition _legendPosition = charts.BehaviorPosition.bottom;
-
-//   // Data to render.
-//   late List<_SalesData> _series1, _series2;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     this._series1 = _genRandData();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView(
-//       padding: const EdgeInsets.all(8),
-//       children: <Widget>[
-//         SizedBox(
-//           height: 300,
-//           child: charts.TimeSeriesChart(
-//             /*seriesList=*/ [
-//               charts.Series<_SalesData, DateTime>(
-//                 id: 'Sales-1',
-//                 colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-//                 domainFn: (_SalesData sales, _) => sales.date,
-//                 measureFn: (_SalesData sales, _) => sales.sales,
-//                 data: this._series1,
-//               ),
-//               charts.Series<_SalesData, DateTime>(
-//                 id: 'Sales-2',
-//                 colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-//                 domainFn: (_SalesData sales, _) => sales.date,
-//                 measureFn: (_SalesData sales, _) => sales.sales,
-//                 data: this._series2,
-//               ),
-//             ],
-//             defaultInteractions: this._defaultInteractions,
-//             defaultRenderer: charts.LineRendererConfig(
-//               includePoints: this._includePoints,
-//               includeArea: this._includeArea,
-//               stacked: this._stacked,
-//             ),
-//             animate: this._animate,
-//             behaviors: [
-//               // Add title.
-//               charts.ChartTitle(
-//                 'Dummy sales time series',
-//                 behaviorPosition: _titlePosition,
-//               ),
-//               // Add legend.
-//               charts.SeriesLegend(position: _legendPosition),
-//               // Highlight X and Y value of selected point.
-//               charts.LinePointHighlighter(
-//                 showHorizontalFollowLine:
-//                     charts.LinePointHighlighterFollowLineType.all,
-//                 showVerticalFollowLine:
-//                     charts.LinePointHighlighterFollowLineType.nearest,
-//               ),
-//             ],
-//           ),
-//         ),
-//         const Divider(),
-//         ..._controlWidgets(),
-//       ],
-//     );
-//   }
-
-//   /// Widgets to control the chart appearance and behavior.
-//   List<Widget> _controlWidgets() => <Widget>[
-//         SwitchListTile(
-//           title: const Text('animate'),
-//           onChanged: (bool val) => setState(() => this._animate = val),
-//           value: this._animate,
-//         ),
-//         SwitchListTile(
-//           title: const Text('defaultInteractions'),
-//           onChanged: (bool val) =>
-//               setState(() => this._defaultInteractions = val),
-//           value: this._defaultInteractions,
-//         ),
-//         SwitchListTile(
-//           title: const Text('includePoints'),
-//           onChanged: (bool val) => setState(() => this._includePoints = val),
-//           value: this._includePoints,
-//         ),
-//         SwitchListTile(
-//           title: const Text('includeArea'),
-//           onChanged: (bool val) => setState(() => this._includeArea = val),
-//           value: this._includeArea,
-//         ),
-//         SwitchListTile(
-//           title: const Text('stacked'),
-//           onChanged: (bool val) => setState(() => this._stacked = val),
-//           value: this._stacked,
-//         ),
-//         ListTile(
-//           title: const Text('titlePosition:'),
-//           trailing: DropdownButton<charts.BehaviorPosition>(
-//             value: this._titlePosition,
-//             onChanged: (charts.BehaviorPosition? newVal) {
-//               if (newVal != null) {
-//                 setState(() => this._titlePosition = newVal);
-//               }
-//             },
-//             items: [
-//               for (final val in charts.BehaviorPosition.values)
-//                 DropdownMenuItem(value: val, child: Text('$val'))
-//             ],
-//           ),
-//         ),
-//         ListTile(
-//           title: const Text('legendPosition:'),
-//           trailing: DropdownButton<charts.BehaviorPosition>(
-//             value: this._legendPosition,
-//             onChanged: (charts.BehaviorPosition? newVal) {
-//               if (newVal != null) {
-//                 setState(() => this._legendPosition = newVal);
-//               }
-//             },
-//             items: [
-//               for (final val in charts.BehaviorPosition.values)
-//                 DropdownMenuItem(value: val, child: Text('$val'))
-//             ],
-//           ),
-//         ),
-//       ];
-// }
