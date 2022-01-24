@@ -1,9 +1,35 @@
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:demo_youtube/BottomNav.dart';
 import 'package:demo_youtube/create_user.dart';
 import 'package:demo_youtube/information.dart';
 import 'package:demo_youtube/models/user_model.dart';
 import 'package:demo_youtube/recuperacion_password.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'models/loginModel.dart';
+
+int responseStatus = 400;
+
+Future<LoginModel> LoginUser(email, password) async {
+  final String CadenaConexion = 'http://0.0.0.0:8080/users/login';
+  final response = await http.post(Uri.parse(CadenaConexion), body: {
+    "email": email,
+    "password": password,
+  });
+
+  if (response.statusCode == 422) {
+    responseStatus = response.statusCode;
+    print(responseStatus);
+    return LoginModel.fromJson(jsonDecode(response.body));
+  } else {
+    responseStatus = response.statusCode;
+    print(responseStatus);
+    throw Exception('Failed to create album.');
+  }
+}
 
 class Login extends StatefulWidget {
   @override
@@ -11,6 +37,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  Future<LoginModel>? _futureLoginModel;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +53,6 @@ class _LoginState extends State<Login> {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/img/grisnew.png'),
-          // image: NetworkImage(
-          //     "https://png.pngtree.com/thumb_back/fw800/background/20190223/ourmid/pngtree-beautiful-forest-night-purple-background-material-nightnight-viewnightat-nightnightmoonsimplewooddead-image_79316.jpg"),
           fit: BoxFit.cover,
         ),
       ),
@@ -96,7 +124,7 @@ class _LoginState extends State<Login> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: TextField(
-        controller: null,
+        controller: _controllerEmail,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           hintText: "Mail",
@@ -111,6 +139,7 @@ class _LoginState extends State<Login> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: TextField(
+        controller: _controllerPassword,
         obscureText: true,
         decoration: InputDecoration(
           hintText: "Contraseña",
@@ -123,12 +152,18 @@ class _LoginState extends State<Login> {
 
   Widget _buttonEntry(BuildContext context) {
     return FlatButton(
-      onPressed: () {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
-          builder: (BuildContext context) {
-            return NavBar();
-          },
-        ), (Route<dynamic> route) => false);
+      onPressed: () async {
+        _futureLoginModel =
+            LoginUser(_controllerEmail.text, _controllerPassword.text);
+        if (responseStatus != 422) {
+          print('No se pudo hacer nada esta por explotar');
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
+            builder: (BuildContext context) {
+              return NavBar();
+            },
+          ), (Route<dynamic> route) => false);
+        }
       },
       minWidth: 150,
       height: 50,
@@ -223,5 +258,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
 }
