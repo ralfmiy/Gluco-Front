@@ -13,21 +13,20 @@ import 'models/loginModel.dart';
 
 int responseStatus = 400;
 
-Future<LoginModel> LoginUser(email, password) async {
-  final String CadenaConexion = 'http://0.0.0.0:8080/users/login';
-  final response = await http.post(Uri.parse(CadenaConexion), body: {
-    "email": email,
-    "password": password,
-  });
-
-  if (response.statusCode == 422) {
+Future<LoginModel> LoginUser(String email, String password) async {
+  final String CadenaConexion = 'http://192.168.0.6:8000/users/login';
+  var json = {'email': email, 'password': password};
+  final response = await http.post(Uri.parse(CadenaConexion),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(json));
+  if (response.statusCode == 200) {
     responseStatus = response.statusCode;
-    print(responseStatus);
     return LoginModel.fromJson(jsonDecode(response.body));
   } else {
     responseStatus = response.statusCode;
-    print(responseStatus);
-    throw Exception('Failed to create album.');
+    throw Exception('Failed to create user.');
   }
 }
 
@@ -153,16 +152,17 @@ class _LoginState extends State<Login> {
   Widget _buttonEntry(BuildContext context) {
     return FlatButton(
       onPressed: () async {
-        _futureLoginModel =
-            LoginUser(_controllerEmail.text, _controllerPassword.text);
-        if (responseStatus != 422) {
-          print('No se pudo hacer nada esta por explotar');
-        } else {
+        _futureLoginModel = LoginUser(_controllerEmail.text.toString(),
+            _controllerPassword.text.toString());
+        if (responseStatus == 200) {
+          print("Entro aqui");
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
             builder: (BuildContext context) {
               return NavBar();
             },
           ), (Route<dynamic> route) => false);
+        } else {
+          print('No se pudo hacer nada esta por explotar');
         }
       },
       minWidth: 150,
