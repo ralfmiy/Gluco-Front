@@ -13,23 +13,6 @@ import 'models/loginModel.dart';
 
 int responseStatus = 400;
 
-Future<LoginModel> LoginUser(String email, String password) async {
-  final String CadenaConexion = 'http://192.168.0.6:8000/users/login';
-  var json = {'email': email, 'password': password};
-  final response = await http.post(Uri.parse(CadenaConexion),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(json));
-  if (response.statusCode == 200) {
-    responseStatus = response.statusCode;
-    return LoginModel.fromJson(jsonDecode(response.body));
-  } else {
-    responseStatus = response.statusCode;
-    throw Exception('Failed to create user.');
-  }
-}
-
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -38,13 +21,34 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  Future<LoginModel>? _futureLoginModel;
+  String futureLoginModel = "";
+
+  int responseStatus = 400;
+  String userResponse = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _page(context),
     );
+  }
+
+  Future<String> LoginUser(String email, String password) async {
+    final String CadenaConexion = 'http://192.168.0.14:8080/users/login';
+    var json = {'email': email, 'password': password};
+    final response = await http.post(Uri.parse(CadenaConexion),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(json));
+    if (response.statusCode == 200) {
+      responseStatus = response.statusCode;
+      //return LoginModel.fromJson(jsonDecode(response.body));
+      return response.body;
+    } else {
+      responseStatus = response.statusCode;
+      throw Exception('Failed to create user.');
+    }
   }
 
   Widget _page(BuildContext context) {
@@ -149,11 +153,19 @@ class _LoginState extends State<Login> {
     );
   }
 
+//   ralfmiy@mail.com
+
   Widget _buttonEntry(BuildContext context) {
     return FlatButton(
       onPressed: () async {
-        _futureLoginModel = LoginUser(_controllerEmail.text.toString(),
-            _controllerPassword.text.toString());
+        String Email = _controllerEmail.text.toString() != null
+            ? _controllerEmail.text.toString()
+            : "";
+        String Password = _controllerPassword.text.toString() != null
+            ? _controllerPassword.text.toString()
+            : "";
+        userResponse = await LoginUser(Email, Password);
+        print(userResponse);
         if (responseStatus == 200) {
           print("Entro aqui");
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
