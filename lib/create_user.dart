@@ -4,6 +4,8 @@ import 'package:demo_youtube/BottomNav.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'models/user_model.dart';
+
 class CreateUser extends StatefulWidget {
   const CreateUser({Key? key}) : super(key: key);
 
@@ -23,6 +25,7 @@ class _CreateUserState extends State<CreateUser> {
 
   int responseStatus = 400;
   String userResponse = "";
+  UserModel userModel = UserModel();
 
   @override
   Widget build(BuildContext context) {
@@ -229,11 +232,15 @@ class _CreateUserState extends State<CreateUser> {
           userResponse =
               await CreateUser(Email, Password, Name, LastName, Phone);
           print(userResponse);
+          var jsonUser = jsonDecode(userResponse);
+          userModel = UserModel.fromJson(jsonUser);
           if (responseStatus == 200) {
             print("Entro aqui");
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
               builder: (BuildContext context) {
-                return NavBar();
+                return  NavBar(
+                userModel: userModel,
+              );;
               },
             ), (Route<dynamic> route) => false);
           } else {
