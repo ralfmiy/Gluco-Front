@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
           print("Entro aqui");
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
             builder: (BuildContext context) {
-              return NavBar();
+              return NavBar(userModel: userModel,);
             },
           ), (Route<dynamic> route) => false);
         } else {
