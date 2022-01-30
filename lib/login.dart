@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
 
   int responseStatus = 400;
   String userResponse = "";
+  UserModel userModel = UserModel();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,7 @@ class _LoginState extends State<Login> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(json));
+
     if (response.statusCode == 200) {
       responseStatus = response.statusCode;
       //return LoginModel.fromJson(jsonDecode(response.body));
@@ -166,6 +168,8 @@ class _LoginState extends State<Login> {
             : "";
         userResponse = await LoginUser(Email, Password);
         print(userResponse);
+        var jsonUser = jsonDecode(userResponse);
+        userModel=UserModel.fromJson(jsonUser);
         if (responseStatus == 200) {
           print("Entro aqui");
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(

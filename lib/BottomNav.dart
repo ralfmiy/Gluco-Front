@@ -1,14 +1,17 @@
+import 'package:demo_youtube/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'home/home.dart';
 import 'search/search.dart';
 import 'Profile/profile.dart';
 
 class NavBar extends StatefulWidget {
+  final UserModel? userModel;
+  NavBar({@required this.userModel });
 
   @override
   State<NavBar> createState() => _NavBarState();
 }
-
+UserModel? userModel;
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
   Color col = Colors.purple;
@@ -17,6 +20,7 @@ class _NavBarState extends State<NavBar> {
 
   void _onItemTapped(int index) {
     setState(() {
+      print (userModel!.id);
       _selectedIndex = index;
     });
   }
