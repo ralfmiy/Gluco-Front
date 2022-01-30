@@ -169,12 +169,14 @@ class _LoginState extends State<Login> {
         userResponse = await LoginUser(Email, Password);
         print(userResponse);
         var jsonUser = jsonDecode(userResponse);
-        userModel=UserModel.fromJson(jsonUser);
+        userModel = UserModel.fromJson(jsonUser);
         if (responseStatus == 200) {
           print("Entro aqui");
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
             builder: (BuildContext context) {
-              return NavBar(userModel: userModel,);
+              return NavBar(
+                userModel: userModel,
+              );
             },
           ), (Route<dynamic> route) => false);
         } else {

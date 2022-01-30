@@ -5,8 +5,10 @@ import 'search/search.dart';
 import 'Profile/profile.dart';
 
 class NavBar extends StatefulWidget {
-  final UserModel? userModel;
-  NavBar({@required this.userModel });
+
+  NavBar({Key? key, required this.userModel}) : super(key: key);
+
+  final UserModel userModel;
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -20,7 +22,7 @@ class _NavBarState extends State<NavBar> {
 
   void _onItemTapped(int index) {
     setState(() {
-      print (userModel!.id);
+      print (widget.userModel.id);
       _selectedIndex = index;
     });
   }
