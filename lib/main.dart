@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'create_user.dart';
 import 'example.dart';
 import 'login.dart';
-import 'BottomNav.dart';
+import 'bottom_navbar.dart';
 
 void main() => runApp(MiApp());
 

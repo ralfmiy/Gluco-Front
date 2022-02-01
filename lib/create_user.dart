@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:demo_youtube/BottomNav.dart';
+import 'package:demo_youtube/bottom_navbar.dart';
+import 'package:demo_youtube/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -238,9 +239,7 @@ class _CreateUserState extends State<CreateUser> {
             print("Entro aqui");
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
               builder: (BuildContext context) {
-                return  NavBar(
-                userModel: userModel,
-              );;
+                return  Login();
               },
             ), (Route<dynamic> route) => false);
           } else {

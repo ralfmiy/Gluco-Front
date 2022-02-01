@@ -1,6 +1,36 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class Home extends StatelessWidget {
+import 'package:demo_youtube/models/user_model.dart';
+import 'package:demo_youtube/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:demo_youtube/bottom_navbar.dart';
+
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  String measure = '- -';
+  int responseStatus = 400;
+  String responseMeasure = '';
+
+  Future<String> getmeasure(int? usrId) async {
+    final String CadenaConexion =
+        'http://192.168.0.14:8080/measure/' + usrId.toString();
+    final response = await http.get(Uri.parse(CadenaConexion));
+    if (response.statusCode == 200) {
+      responseStatus = response.statusCode;
+      return response.body;
+    } else {
+      responseStatus = response.statusCode;
+      throw Exception('Failed to create user.');
+    }
+  }
+//ralfmiy@mail.com
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,7 +98,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget Nivel(BuildContext context) {
+  Widget Nivel(BuildContext context, num? _measure) {
     return Column(
       children: [
         Container(
@@ -83,7 +113,10 @@ class Home extends StatelessWidget {
               topRight: Radius.circular(15),
             ),
           ),
-          child: Text("85", style: TextStyle(fontSize: 50)),
+          child: Text(
+            _measure == null ? 0.toString() : _measure.toString(),
+            style: TextStyle(fontSize: 50),
+          ),
         ),
         Container(
           color: Colors.black,
@@ -96,7 +129,13 @@ class Home extends StatelessWidget {
 
   Widget BotonMedir(context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () async {
+        responseMeasure = await getmeasure(AppProvider().userModel.id);
+        var jsonMeasure = jsonDecode(responseMeasure);
+        setState(() {
+          measure = jsonMeasure['glucoseCal'];
+        });
+      },
       minWidth: MediaQuery.of(context).size.width * 0.65,
       height: 55,
       shape: RoundedRectangleBorder(
@@ -145,7 +184,7 @@ class Home extends StatelessWidget {
               topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
           color: Colors.white,
         ),
-        child: Text("85", style: TextStyle(fontSize: 50)),
+        child: Text(measure, style: TextStyle(fontSize: 50)),
       ),
     );
   }

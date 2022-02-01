@@ -33,6 +33,7 @@ dependencies:
   charts_flutter: ^0.12.0
   syncfusion_flutter_charts: ^19.4.41
   http: ^0.13.4
+  provider: ^6.0.2
   
 
 

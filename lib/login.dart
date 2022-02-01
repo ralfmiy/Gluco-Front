@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:async';
 
-import 'package:demo_youtube/BottomNav.dart';
+import 'package:demo_youtube/bottom_navbar.dart';
 import 'package:demo_youtube/create_user.dart';
 import 'package:demo_youtube/information.dart';
 import 'package:demo_youtube/models/user_model.dart';
+import 'package:demo_youtube/provider.dart';
 import 'package:demo_youtube/recuperacion_password.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'models/loginModel.dart';
+import 'models/login_model.dart';
 
 int responseStatus = 400;
 
@@ -172,11 +173,10 @@ class _LoginState extends State<Login> {
         userModel = UserModel.fromJson(jsonUser);
         if (responseStatus == 200) {
           print("Entro aqui");
+          AppProvider().userModel = userModel;
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
             builder: (BuildContext context) {
-              return NavBar(
-                userModel: userModel,
-              );
+              return NavBar();
             },
           ), (Route<dynamic> route) => false);
         } else {
