@@ -37,7 +37,7 @@ class _CreateUserState extends State<CreateUser> {
 
   Future<String> CreateUser(String email, String password, String name,
       String lastName, String phone) async {
-    final String CadenaConexion = 'http://192.168.0.14:8080/users';
+    final String CadenaConexion = 'http://MBP-DE-RALF/users';
     var json = {
       "name": name,
       "lastname": lastName,
@@ -239,7 +239,7 @@ class _CreateUserState extends State<CreateUser> {
             print("Entro aqui");
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
               builder: (BuildContext context) {
-                return  Login();
+                return Login();
               },
             ), (Route<dynamic> route) => false);
           } else {

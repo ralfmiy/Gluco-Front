@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
 
   Future<String> getmeasure(int? usrId) async {
     final String CadenaConexion =
-        'http://192.168.0.14:8080/measure/' + usrId.toString();
+        'http://MBP-DE-RALF/measure/' + usrId.toString();
     final response = await http.get(Uri.parse(CadenaConexion));
     if (response.statusCode == 200) {
       responseStatus = response.statusCode;
@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
       throw Exception('Failed to create user.');
     }
   }
+
 //ralfmiy@mail.com
   @override
   Widget build(BuildContext context) {
@@ -132,9 +133,8 @@ class _HomeState extends State<Home> {
       onPressed: () async {
         responseMeasure = await getmeasure(AppProvider().userModel.id);
         var jsonMeasure = jsonDecode(responseMeasure);
-        setState(() {
-          measure = jsonMeasure['glucoseCal'];
-        });
+        measure = jsonMeasure['glucoseCal'].toString();
+        setState(() {});
       },
       minWidth: MediaQuery.of(context).size.width * 0.65,
       height: 55,

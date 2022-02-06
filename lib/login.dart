@@ -7,6 +7,7 @@ import 'package:demo_youtube/information.dart';
 import 'package:demo_youtube/models/user_model.dart';
 import 'package:demo_youtube/provider.dart';
 import 'package:demo_youtube/recuperacion_password.dart';
+import 'package:demo_youtube/util/loading_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,7 +37,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<String> LoginUser(String email, String password) async {
-    final String CadenaConexion = 'http://192.168.0.14:8080/users/login';
+    final String CadenaConexion = 'http://MBP-DE-RALF/users/login';
     var json = {'email': email, 'password': password};
     final response = await http.post(Uri.parse(CadenaConexion),
         headers: <String, String>{
@@ -167,21 +168,41 @@ class _LoginState extends State<Login> {
         String Password = _controllerPassword.text.toString() != null
             ? _controllerPassword.text.toString()
             : "";
-        userResponse = await LoginUser(Email, Password);
-        print(userResponse);
-        var jsonUser = jsonDecode(userResponse);
-        userModel = UserModel.fromJson(jsonUser);
-        if (responseStatus == 200) {
-          print("Entro aqui");
-          AppProvider().userModel = userModel;
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
-            builder: (BuildContext context) {
-              return NavBar();
-            },
-          ), (Route<dynamic> route) => false);
-        } else {
-          print('No se pudo hacer nada esta por explotar');
-        }
+        //userResponse = await LoginUser(Email, Password);
+        //print(userResponse);
+        // var jsonUser = jsonDecode(userResponse);
+        // userModel = UserModel.fromJson(jsonUser);
+        await LoadingPopup(
+                context: context,
+                onLoading: logi(Email, Password),
+                onResult: (data) {
+                  if (responseStatus == 200) {
+                    var jsonUser = jsonDecode(userResponse);
+                    userModel = UserModel.fromJson(jsonUser);
+                    AppProvider().userModel = userModel;
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute<Null>(
+                      builder: (BuildContext context) {
+                        return NavBar();
+                      },
+                    ), (Route<dynamic> route) => false);
+                  } else {
+                    print('No fue buena');
+                  }
+                },
+                onError: () {})
+            .show();
+        // if (responseStatus == 200) {
+        //   print("Entro aqui");
+        //   AppProvider().userModel = userModel;
+        //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
+        //     builder: (BuildContext context) {
+        //       return NavBar();
+        //     },
+        //   ), (Route<dynamic> route) => false);
+        // } else {
+        //   print('No se pudo hacer nada esta por explotar');
+        // }
       },
       minWidth: 150,
       height: 50,
@@ -202,6 +223,12 @@ class _LoginState extends State<Login> {
       ),
       color: Colors.blue[400],
     );
+  }
+
+  Future<String?> logi(String e, String p) async {
+    await Future.delayed(Duration(seconds: 3));
+    userResponse = await LoginUser(e, p);
+    return userResponse;
   }
 
   Widget _buttonNewAccount(BuildContext context) {
