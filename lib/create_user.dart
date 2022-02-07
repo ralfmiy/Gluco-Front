@@ -37,7 +37,7 @@ class _CreateUserState extends State<CreateUser> {
 
   Future<String> CreateUser(String email, String password, String name,
       String lastName, String phone) async {
-    final String CadenaConexion = 'http://MBP-DE-RALF/users';
+    final String CadenaConexion = 'http://localhost:8080/users';
     var json = {
       "name": name,
       "lastname": lastName,

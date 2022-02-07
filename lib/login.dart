@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<String> LoginUser(String email, String password) async {
-    final String CadenaConexion = 'http://MBP-DE-RALF/users/login';
+    final String CadenaConexion = 'http://localhost:8080/users/login';
     var json = {'email': email, 'password': password};
     final response = await http.post(Uri.parse(CadenaConexion),
         headers: <String, String>{
@@ -173,25 +173,24 @@ class _LoginState extends State<Login> {
         // var jsonUser = jsonDecode(userResponse);
         // userModel = UserModel.fromJson(jsonUser);
         await LoadingPopup(
-                context: context,
-                onLoading: logi(Email, Password),
-                onResult: (data) {
-                  if (responseStatus == 200) {
-                    var jsonUser = jsonDecode(userResponse);
-                    userModel = UserModel.fromJson(jsonUser);
-                    AppProvider().userModel = userModel;
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute<Null>(
-                      builder: (BuildContext context) {
-                        return NavBar();
-                      },
-                    ), (Route<dynamic> route) => false);
-                  } else {
-                    print('No fue buena');
-                  }
+          context: context,
+          onLoading: logi(Email, Password),
+          onResult: (data) {
+            if (responseStatus == 200) {
+              var jsonUser = jsonDecode(userResponse);
+              userModel = UserModel.fromJson(jsonUser);
+              AppProvider().userModel = userModel;
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
+                builder: (BuildContext context) {
+                  return NavBar();
                 },
-                onError: () {})
-            .show();
+              ), (Route<dynamic> route) => false);
+            } else {
+              print('No fue buena');
+            }
+          },
+          onError: () {},
+        ).show();
         // if (responseStatus == 200) {
         //   print("Entro aqui");
         //   AppProvider().userModel = userModel;
