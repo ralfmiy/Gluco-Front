@@ -1,16 +1,16 @@
 class MedicionModel {
   final String? dia;
+  final String? hora;
   final num? medida;
   final int? id;
-  final int? user_id;
-  MedicionModel({this.dia, this.medida, this.id, this.user_id});
+  final int? count;
+  MedicionModel({this.dia, this.medida, this.id, this.hora, this.count});
 
-   factory MedicionModel.fromJson(Map<String, dynamic> json) {
+  factory MedicionModel.fromJson(Map<String, dynamic> json) {
     return MedicionModel(
-      dia:json['measure_date'] ,
+      dia: json['measure_date'],
       medida: json['measurement'],
       id: json['id'],
-      user_id: json['user_id'],
     );
   }
 }

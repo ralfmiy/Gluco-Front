@@ -15,50 +15,17 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  List<MedicionModel> _datosGrafico = [];
-  // List<Medicion> datosGrafico = [
-  //   Medicion("2022-02-06T16:01:45.931Z", 80),
-  //   Medicion("2022-02-06T16:02:46.931Z", 85),
-  //   Medicion("2022-02-06T16:03:45.931Z", 90),
-  //   Medicion("2022-02-06T16:04:45.931Z", 75),
-  //   Medicion("2022-02-06T16:05:45.931Z", 80),
-  //   Medicion("2022-02-06T16:06:45.931Z", 80),
-  //   Medicion("2022-02-06T16:07:45.931Z", 80),
-  //   Medicion("2022-02-06T16:08:45.931Z", 80),
-  // ];
-
-  // List<Medicion> getMediciones() {
-  //   datosGrafico;
-  //   return datosGrafico;
-  // }
-
-  List<MedicionModel> datosGrafico2 = [];
-  // List<Medicion> datosGrafico2 = [
-  //   Medicion("2022-02-06T16:01:45.931Z", 80),
-  //   Medicion("2022-02-06T16:02:46.931Z", 85),
-  //   Medicion("2022-02-06T16:03:45.931Z", 90),
-  //   Medicion("2022-02-06T16:04:45.931Z", 75),
-  //   Medicion("2022-02-06T16:05:45.931Z", 80),
-  //   Medicion("2022-02-06T16:06:45.931Z", 80),
-  //   Medicion("2022-02-06T16:07:45.931Z", 80),
-  //   Medicion("2022-02-06T16:08:45.931Z", 80),
-  // ];
-
-  // List<Medicion> getMediciones2() {
-  //   datosGrafico2;
-  //   return datosGrafico2;
-  // }
-
   int responseStatus = 400;
   String response = "";
+  String date = '';
+  DateTime fechaValue = DateTime.now();
 
   int? sortColumnIndex;
   bool isAscending = false;
 
   MedicionModel medicionModel = MedicionModel();
   List<MedicionModel> listMedicionModel = [];
-
-  String date = '';
+  List<MedicionModel> listMedicionModelGrafico = [];
 
   Widget TablaDatos2(List<MedicionModel> listMedicionModel) {
     return ListView(
@@ -129,6 +96,7 @@ class _SearchState extends State<Search> {
 
   @override
   void initState() {
+    TopList();
     // _datosGrafico = getMediciones();
     // _datosGrafico2 = getMediciones2();
     super.initState();
@@ -159,8 +127,8 @@ class _SearchState extends State<Search> {
         series: <ChartSeries>[
           LineSeries<MedicionModel, String>(
             name: "Historial Mediciones",
-            dataSource: _datosGrafico,
-            xValueMapper: (MedicionModel med, _) => med.dia,
+            dataSource: listMedicionModelGrafico,
+            xValueMapper: (MedicionModel med, _) => med.count.toString(),
             yValueMapper: (MedicionModel med, _) => med.medida,
             dataLabelSettings: DataLabelSettings(
               isVisible: true,
@@ -181,11 +149,12 @@ class _SearchState extends State<Search> {
       onPressed: () {
         showDatePicker(
           context: context,
-          initialDate: DateTime.now(),
+          initialDate: fechaValue,
           firstDate: DateTime(2018),
           lastDate: DateTime.now(),
         ).then((DateTime? value) async {
           if (value != null) {
+            fechaValue = value;
             DateTime _fromDate = DateTime.now();
             _fromDate = value;
             date = DateFormat('yyyy-MM-dd').format(_fromDate);
@@ -199,11 +168,9 @@ class _SearchState extends State<Search> {
                         id: medida['id'],
                         medida: medida['measurement'],
                         dia: medida['measure_date'],
-                        user_id: medida['user_id'],
                       ))
                   .toList();
             });
-            print('ID:     ${listMedicionModel[1].id}');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Día seleccionado: $date'),
@@ -224,7 +191,6 @@ class _SearchState extends State<Search> {
   }
 
   Future<String> Search(String date) async {
-    String respuesta;
     final String CadenaConexion = 'http://localhost:8080/measure/search';
     int idN = AppProvider().userModel.id!;
     var json = {'userId': idN, 'date': date};
@@ -236,9 +202,39 @@ class _SearchState extends State<Search> {
 
     if (response.statusCode == 200) {
       responseStatus = response.statusCode;
-      respuesta = response.body;
       //return LoginModel.fromJson(jsonDecode(response.body));
       return response.body;
+    } else {
+      responseStatus = response.statusCode;
+      throw Exception('Failed to search date.');
+    }
+  }
+
+  Future<void> TopList() async {
+    final String CadenaConexion = 'http://localhost:8080/measure/list';
+    int idN = AppProvider().userModel.id!;
+    var json = {'userId': idN, 'count': 10};
+    final response = await http.post(Uri.parse(CadenaConexion),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(json));
+
+    if (response.statusCode == 200) {
+      int i = 0;
+      responseStatus = response.statusCode;
+      List jsonGrafico = jsonDecode(response.body);
+      print('Lista de mediciones $jsonGrafico');
+      listMedicionModelGrafico = jsonGrafico
+          .map((medida) => MedicionModel(
+              id: medida['id'],
+              medida: medida['measurement'],
+              dia: medida['measure_date'],
+              count: i = i + 1))
+          .toList();
+      setState(() {});
+      print(listMedicionModelGrafico);
+      //return LoginModel.fromJson(jsonDecode(response.body));
     } else {
       responseStatus = response.statusCode;
       throw Exception('Failed to search date.');
