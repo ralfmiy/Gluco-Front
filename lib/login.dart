@@ -30,6 +30,12 @@ class _LoginState extends State<Login> {
   UserModel userModel = UserModel();
 
   @override
+  void initState() {
+    print(AppProvider().userModel.email);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _page(context),

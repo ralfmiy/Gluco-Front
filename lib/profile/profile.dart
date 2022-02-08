@@ -1,6 +1,9 @@
 import 'package:demo_youtube/bottom_navbar.dart';
 import 'package:demo_youtube/login.dart';
+import 'package:demo_youtube/models/user_model.dart';
 import 'package:flutter/material.dart';
+
+import '../provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -20,8 +23,8 @@ class _ProfileState extends State<Profile> {
           Cabecera(context),
           Nombre(),
           Separador(context),
-          Datos(ini: "eMail: ", dat: "ralfmiy@hotmail.com"),
-          Datos(ini: "Teléfono: ", dat: "387-5353233"),
+          Datos(ini: "eMail: ", dat: "${AppProvider().userModel.email!}"),
+          Datos(ini: "Teléfono: ", dat: "${AppProvider().userModel.phone!}"),
           //eMail(ini: "Fecha Nacimiento: ", dat: "14/11/1996"),
           Expanded(
             child: Container(),
@@ -43,13 +46,19 @@ class _ProfileState extends State<Profile> {
           Container(
             margin: EdgeInsets.only(left: 30),
             width: MediaQuery.of(context).size.width * 0.3,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.green,
-              image: DecorationImage(
-                image: AssetImage('assets/img/fondo.jpg'),
-                fit: BoxFit.contain,
+            child: FittedBox(
+                child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 2, left: 1, right: 1),
+                child: Icon(Icons.person, color: Colors.grey.shade100),
               ),
+            )),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle, color: Color(0xFFF25D4D),
+              // image: DecorationImage(
+              //   image: AssetImage('assets/img/person.png'),
+              //   fit: BoxFit.fitHeight,
+              // ),
             ),
           ),
           SizedBox(
@@ -63,7 +72,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 Container(
                   child: Text(
-                    "Ralf",
+                    "${AppProvider().userModel.name!}",
                     style: TextStyle(
                         color: Colors.red[800],
                         fontSize: 50,
@@ -72,7 +81,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 Container(
                   child: Text(
-                    "Miy",
+                    "${AppProvider().userModel.lastName!}",
                     style: TextStyle(
                         color: Colors.red[800],
                         fontSize: 50,
@@ -132,6 +141,7 @@ class _ProfileState extends State<Profile> {
   Widget BotonCerrarSesion(context) {
     return FlatButton(
       onPressed: () {
+        AppProvider().userModel = UserModel();
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<Null>(
           builder: (BuildContext context) {
             return Login();
@@ -190,6 +200,4 @@ class _ProfileState extends State<Profile> {
       width: MediaQuery.of(context).size.width,
     );
   }
-
-
 }

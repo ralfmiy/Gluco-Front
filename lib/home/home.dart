@@ -31,6 +31,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  @override
+  void initState() {
+    print(AppProvider().userModel.email);
+    super.initState();
+  }
+
 //ralfmiy@mail.com
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,15 @@ class _HomeState extends State<Home> {
           Nombre(),
           Separador(context),
           ContenedorBordeNivel(),
+          SizedBox(height: 10),
+          Text(
+            "mg/dl",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
           //Nivel(context),
           Expanded(
             child: Container(),

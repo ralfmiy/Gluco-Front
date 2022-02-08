@@ -36,11 +36,24 @@ class _SearchState extends State<Search> {
           sortColumnIndex: sortColumnIndex,
           columns: [
             DataColumn(
-              label: Text("Hora"),
+              label: Expanded(
+                child: Center(
+                  child: Text("Hora",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                ),
+              ),
               onSort: _onSort,
             ),
             DataColumn(
-              label: Text("Medición"),
+              label: Expanded(
+                child: Center(
+                  child: Text(
+                    "Medición",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              ),
               onSort: _onSort,
             ),
           ],
@@ -56,8 +69,13 @@ class _SearchState extends State<Search> {
         return DataRow(cells: getCells(cells));
       }).toList();
 
-  List<DataCell> getCells(List<dynamic> cells) =>
-      cells.map((data) => DataCell(Text('$data'))).toList();
+  List<DataCell> getCells(List<dynamic> cells) => cells
+      .map((data) => DataCell(Center(
+            child: Text(
+              '$data',
+            ),
+          )))
+      .toList();
 
   int _compareDouble(bool ascending, num dia, num dia2) =>
       ascending ? dia.compareTo(dia2) : dia2.compareTo(dia);
@@ -109,6 +127,23 @@ class _SearchState extends State<Search> {
       children: [
         Tabla(),
         BotonSeleFecha(),
+        SizedBox(
+          height: 10,
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                  text: 'Fecha seleccionada: ', style: TextStyle(fontSize: 15)),
+              TextSpan(
+                  text: '${DateFormat('dd-MM-yyyy').format(fechaValue)}',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         Expanded(child: TablaDatos2(listMedicionModel)),
       ],
     );
@@ -120,7 +155,7 @@ class _SearchState extends State<Search> {
       width: MediaQuery.of(context).size.width * 0.95,
       height: MediaQuery.of(context).size.height * 0.40,
       child: SfCartesianChart(
-        title: ChartTitle(text: "Mediciones"),
+        title: ChartTitle(text: "Mediciones (mg/dl)"),
         primaryXAxis: CategoryAxis(),
         //legend: Legend(isVisible: true),
         tooltipBehavior: TooltipBehavior(enable: true),
@@ -239,6 +274,10 @@ class _SearchState extends State<Search> {
       responseStatus = response.statusCode;
       throw Exception('Failed to search date.');
     }
+  }
+
+  Widget TextoFecha(date) {
+    return Text('Fecha ${date}');
   }
 }
 
